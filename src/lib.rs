@@ -5,6 +5,8 @@ use djanco::log::*;
 
 use djanco_ext::*;
 
+use djanco::csv::*;
+
 use djanco::objects::*;
 
 
@@ -31,9 +33,18 @@ pub fn my_query(database: &Database, _log: &Log, output: &Path) -> Result<(), st
                 .write(true)
                 .create(true)
                 .open(&path)?;
+
+    let project_ids: Vec<ProjectId> =
+    ProjectId::from_csv("projects.csv").unwrap();
         
     writeln!(file, "project_id,year,chain_length,frequency")?;
-    for project in database.projects() {
+
+       
+    let projects = database.projects().filter(|project| {
+        project_ids.contains(&project.id())
+    });
+    
+    for project in projects {
         let project_id = project.id();
         let last_commits = get_year_end_revision(project);
 
