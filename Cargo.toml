@@ -9,7 +9,7 @@ license = "MIT"
 
 [dependencies]
 clap = "3.0.0-beta.2"
-djanco = { git = "https://github.com/PRL-PRG/djanco", branch = "old_sentinels_new_stuff" }
+djanco = { git = "https://github.com/PRL-PRG/djanco", branch = "main" }
 djanco_ext = { git = "https://github.com/PRL-PRG/djanco_ext" }
 method-chains = {git = "https://github.com/PRL-PRG/method-chaining"}
 chrono = "*"
