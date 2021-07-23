@@ -69,40 +69,44 @@ pub fn get_year_end_revision<'a>(project : ItemWithData<'a,Project> ) -> BTreeMa
 
     
     let mut commits_per_year = BTreeMap::<i32, Vec<ItemWithData<Commit>> >::new();
-    let commits = project.commits_with_data().unwrap();
-
-    // First, group all the commits by year
-    for commit in commits {
-
-        if let Some(timestamp) = commit.committer_timestamp() {
-            let time =  NaiveDateTime::from_timestamp(timestamp, 0);
-            let year = time.date().year();
-            commits_per_year.entry(year).or_insert(Vec::new()).push(commit);
-        }
-
-    }
-
     let mut last_commit_per_year =  BTreeMap::<i32, ItemWithData<Commit> >::new();
 
-    // finds the latest commit per year
-    for (year, commits) in commits_per_year {
-        let last_commit = commits.into_iter().max_by_key(|commit| {
+    if let Some(commits) = project.commits_with_data(){
+            // First, group all the commits by year
+        for commit in commits {
+
             if let Some(timestamp) = commit.committer_timestamp() {
-                timestamp
-            }else{
-                0 as i64
+                let time =  NaiveDateTime::from_timestamp(timestamp, 0);
+                let year = time.date().year();
+                commits_per_year.entry(year).or_insert(Vec::new()).push(commit);
             }
-            
-        });
+
+        }
+
         
-        if let Some(last_commit_unwrapped) = last_commit {
-            if let Some(_timestamp) = last_commit_unwrapped.committer_timestamp() {
-                last_commit_per_year.insert(year, last_commit_unwrapped);
+
+        // finds the latest commit per year
+        for (year, commits) in commits_per_year {
+            let last_commit = commits.into_iter().max_by_key(|commit| {
+                if let Some(timestamp) = commit.committer_timestamp() {
+                    timestamp
+                }else{
+                    0 as i64
+                }
+                
+            });
+            
+            if let Some(last_commit_unwrapped) = last_commit {
+                if let Some(_timestamp) = last_commit_unwrapped.committer_timestamp() {
+                    last_commit_per_year.insert(year, last_commit_unwrapped);
+                }
+                
             }
             
         }
-        
     }
+
+
 
     // This function return the last commit for each year 
     last_commit_per_year    
@@ -114,6 +118,7 @@ pub fn get_code_year_end_revision<'a>(commit : ItemWithData<'a,Commit> ) -> BTre
 
     let mut chain_lengths = Vec::<usize>::new();
 
+    
     for change in tree.changes_with_data() {
 
         if let Some(snapshot) = change.snapshot() {
@@ -126,7 +131,7 @@ pub fn get_code_year_end_revision<'a>(commit : ItemWithData<'a,Commit> ) -> BTre
         }
 
     }
-
+    
     chain_lengths
         .into_iter()
         .fold(
