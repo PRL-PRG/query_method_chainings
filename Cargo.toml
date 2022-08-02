@@ -8,7 +8,7 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = { version = "3.2.16", features = ["derive", "cargo" ] }
 djanco = { git = "https://github.com/PRL-PRG/djanco", branch = "main" }
 djanco_ext = { git = "https://github.com/PRL-PRG/djanco_ext" }
 method-chains = {git = "https://github.com/PRL-PRG/method-chaining"}

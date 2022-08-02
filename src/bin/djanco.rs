@@ -1,7 +1,7 @@
 use djanco::*;
 use djanco::log::*;
 use djanco::utils::*;
-use clap::Clap;
+use clap::Parser;
 
 use method_chaining_query;
 
